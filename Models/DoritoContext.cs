@@ -6,11 +6,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Doritos.Models
 {
-    public class ToDoContext:DbContext
+    public class DoritoContext:DbContext
     {
+        // Model first
         public DbSet<ToDoItem> ToDoItems { get; set; }
+        public DbSet<Book> Books { get; set; }
 
-        public ToDoContext(DbContextOptions<ToDoContext> options): base(options)
+
+        public DoritoContext(DbContextOptions<DoritoContext> options): base(options)
         {
             // Database.SetInitializer<SchoolDBContext>(null);
         }

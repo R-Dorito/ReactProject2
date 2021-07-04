@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Doritos.Models;
+using Npgsql;
 
 namespace Doritos
 {
@@ -22,16 +23,12 @@ namespace Doritos
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ToDoContext>(opt => opt.UseNpgsql(Hidden.SQL_FILE_NAME));
+            services.AddDbContext<DoritoContext>(opt => opt.UseNpgsql(Dog.SQL_FILENAME));
+            //services.AddDbContext<BookContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("myContext")));
 
             // connect to service
-
-
-
             // see if tables already exist
-
             // create them if not
-
             // make sure they are the same as the project's current schema
 
             services.AddControllersWithViews();

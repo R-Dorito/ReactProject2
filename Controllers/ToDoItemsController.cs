@@ -13,9 +13,9 @@ namespace Doritos.Controllers
     [ApiController]
     public class ToDoItemsController : ControllerBase
     {
-        private readonly ToDoContext _context;
+        private readonly DoritoContext _context;
 
-        public ToDoItemsController(ToDoContext context)
+        public ToDoItemsController(DoritoContext context)
         {
             _context = context;
         }
