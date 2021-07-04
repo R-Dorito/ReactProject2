@@ -12,21 +12,13 @@ namespace Doritos.Models
         public DbSet<ToDoItem> ToDoItems { get; set; }
         public DbSet<Book> Books { get; set; }
 
-
         public DoritoContext(DbContextOptions<DoritoContext> options): base(options)
         {
-            // Database.SetInitializer<SchoolDBContext>(null);
+
         }
-
-       // public string tablename = "ToDoItem";
-/*        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<ToDoItem>()
-                .ToTable("ToDoItem")
-                .HasKey(s => s.Id);
-        }*/
-
-      /*  protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder.UseNpgsql("Host=localhost:5432;Database=ritasdatabase;Username=postgres;Password=PostGress123."); //, optionsBuilder => optionsBuilder.);*/
+        /*
+         Note:
+            Collation is used to sort strings (text), for example by alphabetic order
+         */
     }
 }

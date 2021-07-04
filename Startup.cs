@@ -24,7 +24,6 @@ namespace Doritos
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<DoritoContext>(opt => opt.UseNpgsql(Dog.SQL_FILENAME));
-            //services.AddDbContext<BookContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("myContext")));
 
             // connect to service
             // see if tables already exist

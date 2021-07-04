@@ -3,6 +3,32 @@ import useFetch from "use-http";
 import { Modal } from "../modal";
 import "./dataTable.css";
 
+class ErrorBoundary extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { error: null, errorInfo: null };
+    }
+
+    componentDidCatch(error, errorLog) {
+        this.setState({
+            error: error,
+            errorInfo: errorLog,
+        });
+    }
+
+    render() {
+        if (this.state.errorInfo) {
+            return (
+                <div>
+                    <h2>There is an error here</h2>
+                    <p>{this.state.errorInfo.componentStack}</p>
+                </div>
+            );
+        }
+        return this.props.children;
+    }
+}
+
 export const TodoList = () => {
     const { request, get, post, del, put, response, loading, error } = useFetch(
         "http://localhost:3001/api/ToDoItems",
@@ -10,6 +36,7 @@ export const TodoList = () => {
             cachePolicy: "no-cache",
         }
     ); // onMount
+
     const [inputField, setInputField] = useState("");
     const [isCheckboxTicked, setIsComplete] = useState(false);
     const [todos, setTodos] = useState([]);
@@ -58,82 +85,88 @@ export const TodoList = () => {
     }
 
     return (
-        <div className="page">
-            <div id="innerDiv" className="formDiv">
-                <form onSubmit={makePost}>
-                    <h4>Add new Input</h4>
-                    <div className="innerDiv">
-                        <p>What is the name?</p>
+        <ErrorBoundary>
+            <div className="page">
+                <div id="innerDiv" className="formDiv">
+                    <form onSubmit={makePost}>
+                        <h4>Add new Input</h4>
+                        <div className="innerDiv">
+                            <p>What is the name?</p>
+                            <input
+                                type="text"
+                                value={inputField}
+                                onChange={sendRequest}
+                            />
+                        </div>
+
+                        <div className="innerDiv">
+                            <p>Is Checked?</p>
+                            <input
+                                name="Is it Complete?"
+                                type="checkbox"
+                                checked={isCheckboxTicked}
+                                onChange={changeIsChecked}
+                            />
+                        </div>
+
                         <input
-                            type="text"
-                            value={inputField}
-                            onChange={sendRequest}
+                            className="submitButton"
+                            type="submit"
+                            value="Submit"
                         />
-                    </div>
+                    </form>
+                </div>
 
-                    <div className="innerDiv">
-                        <p>Is Checked?</p>
-                        <input
-                            name="Is it Complete?"
-                            type="checkbox"
-                            checked={isCheckboxTicked}
-                            onChange={changeIsChecked}
-                        />
-                    </div>
-
-                    <input
-                        className="submitButton"
-                        type="submit"
-                        value="Submit"
-                    />
-                </form>
-            </div>
-
-            <h4>Items Grid</h4>
-            <div className="grid">
-                <div className="gridCell bold">ID</div>
-                <div className="gridCell bold">Name</div>
-                <div className="gridCell bold">Is Checked</div>
-                <div className="gridCell bold">Delete</div>
-                <div className="gridCell bold">Edit</div>
-                {todos
-                    .sort((itemA, itemB) => itemA.id - itemB.id)
-                    .map((todo) => (
-                        <React.Fragment key={todo.id}>
-                            <div className="gridCell">{todo.id}</div>
-                            <div className="gridCell ">{todo.name}</div>
-                            <div className="gridCell ">
-                                {todo.isComplete ? "true" : "false"}
-                            </div>
-                            <div className="gridCell">
-                                <button onClick={() => handleClick(todo.id)}>
-                                    X
-                                </button>
-                            </div>
-                            <div className="gridCell">
-                                {/*<button onClick={() => makePut(todo.id)}>*/}
-                                <button onClick={() => displayModal()}>
-                                    Edit
-                                </button>
-                                {popup ? (
-                                    <Modal>
-                                        <div className="myModal">
-                                            <div className="innerModal">
-                                                I am a modal for {todo.id}
-                                                <br />
-                                                <button
-                                                    onClick={() => hideModal()}
-                                                >
-                                                    close Modal
-                                                </button>
+                <h4>Items Grid</h4>
+                <div className="grid">
+                    <div className="gridCell bold">ID</div>
+                    <div className="gridCell bold">Name</div>
+                    <div className="gridCell bold">Is Checked</div>
+                    <div className="gridCell bold">Delete</div>
+                    <div className="gridCell bold">Edit</div>
+                    {todos
+                        .sort((itemA, itemB) => itemA.id - itemB.id)
+                        .map((todo) => (
+                            <React.Fragment key={todo.id}>
+                                <div className="gridCell">{todo.id}</div>
+                                <div className="gridCell ">{todo.name}</div>
+                                <div className="gridCell ">
+                                    {todo.isComplete ? "true" : "false"}
+                                </div>
+                                <div className="gridCell">
+                                    <button
+                                        onClick={() => handleClick(todo.id)}
+                                    >
+                                        X
+                                    </button>
+                                </div>
+                                <div className="gridCell">
+                                    {/*<button onClick={() => makePut(todo.id)}>*/}
+                                    <button onClick={() => displayModal()}>
+                                        Edit
+                                    </button>
+                                    {popup ? (
+                                        <Modal>
+                                            <div className="myModal">
+                                                <div className="innerModal">
+                                                    I am a modal for {todo.id}
+                                                    <br />
+                                                    <button
+                                                        onClick={() =>
+                                                            hideModal()
+                                                        }
+                                                    >
+                                                        close Modal
+                                                    </button>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </Modal>
-                                ) : null}
-                            </div>
-                        </React.Fragment>
-                    ))}
+                                        </Modal>
+                                    ) : null}
+                                </div>
+                            </React.Fragment>
+                        ))}
+                </div>
             </div>
-        </div>
+        </ErrorBoundary>
     );
 };
