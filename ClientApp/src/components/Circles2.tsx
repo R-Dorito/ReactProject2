@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./../CSSStuff/Circle.css";
 
-function toPixel(pixleValue) {
-    let returnedPixle;
+function toPixel(pixleValue: string) {
+    let returnedPixle: string;
 
     if (Number.isNaN(pixleValue)) {
         return "0px";
@@ -12,21 +12,29 @@ function toPixel(pixleValue) {
     return returnedPixle;
 }
 
-function determineLeftPos(angle, circleSize) {
+function determineLeftPos(angle: number, circleSize: number) {
     //let value = angle * (Math.PI / 180);
     return toPixel(
-        250 + Math.sin(angle * (Math.PI / 180)) * 250 - circleSize / 2
+        (
+            250 +
+            Math.sin(angle * (Math.PI / 180)) * 250 -
+            circleSize / 2
+        ).toString()
     );
 }
 
-function determineTopPos(angle, circleSize) {
+function determineTopPos(angle: number, circleSize: number) {
     return toPixel(
-        250 - Math.cos(angle * (Math.PI / 180)) * 250 - circleSize / 2
+        (
+            250 -
+            Math.cos(angle * (Math.PI / 180)) * 250 -
+            circleSize / 2
+        ).toString()
     );
 }
 
 export function CirclesView() {
-    const tezt = "1122".split("");
+    const tezt: string[] = "1122".split("");
     return (
         <div>
             <div
@@ -52,7 +60,11 @@ export function CirclesView() {
     );
 }
 
-function Circle(props) {
+function Circle(props: {
+    startingAngle: number;
+    circleSize: number;
+    content: any;
+}) {
     const { startingAngle, circleSize, content } = props;
 
     const [angle, setAngle] = useState(startingAngle);
