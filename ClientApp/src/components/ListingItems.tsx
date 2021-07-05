@@ -1,36 +1,48 @@
 import React, { useState } from "react";
 
-function NumberObject() {
+interface NumObj {
+    number1: number;
+    number2: number;
+}
+
+function NumberObject(this: any) {
     this.number1 = Math.round(Math.random() * 100);
     this.number2 = Math.round(Math.random() * 100);
 }
 
 function CreateList() {
     //make up a list of 20 items
-    let myList = [];
+    let myList: NumObj[] = [];
     for (let i = 0; i < 5; i++) {
-        myList[i] = new NumberObject();
+        myList[i] = new (NumberObject as any)();
     }
     return myList;
 }
 
-export const ListItems = (props) => {
+export const ListItems = () => {
     const [myArray, setArray] = useState(CreateList);
     const [index, setIndex] = useState(0);
     const [answer, setAnswer] = useState("");
     const [isCorrect, setIsCorrect] = useState(false);
     const [buttonClicked, setButtonClicked] = useState(false);
-    const [answerList, setAnswerList] = useState([]);
+    const [answerList, setAnswerList] = useState<string[]>([]);
+    // in typescript the array needs to be useState<string[]>([]);
 
     let current = myArray[index];
 
-    function handleChange(event) {
+    function handleChange(event: {
+        target: { value: React.SetStateAction<string> };
+    }) {
         setAnswer(event.target.value);
     }
 
-    function checkAnswer(arrayAtIndex, userAnswer) {
-        if (arrayAtIndex.number1 + arrayAtIndex.number2 == userAnswer) {
+    function checkAnswer(arrayAtIndex: any, userAnswer: string) {
+        if (
+            (arrayAtIndex.number1 + arrayAtIndex.number2).toString() ==
+            userAnswer
+        ) {
             setAnswer("");
+
             setAnswerList((answerList) => [
                 ...answerList,
                 arrayAtIndex.number1 +
@@ -41,6 +53,8 @@ export const ListItems = (props) => {
             ]);
 
             setIndex(index < myArray.length - 1 ? index + 1 : 0);
+            console.log(answerList + " Index is " + index);
+
             return true;
         } else {
             setButtonClicked(true);
@@ -59,6 +73,15 @@ export const ListItems = (props) => {
                         {current.number1} + {current.number2}
                     </div>
                     <input
+                        onKeyDown={function (event) {
+                            if (event.key === "Enter") {
+                                if (checkAnswer(current, answer)) {
+                                    setIsCorrect(true);
+                                } else {
+                                    setIsCorrect(false);
+                                }
+                            }
+                        }}
                         type="text"
                         value={answer}
                         onChange={handleChange}
@@ -83,17 +106,21 @@ export const ListItems = (props) => {
                     isCorrect ? (
                         ""
                     ) : (
-                        <text style={{ color: "red", fontWeight: "bold" }}>
+                        <p style={{ color: "red", fontWeight: "bold" }}>
                             Inccorect
-                        </text>
+                        </p>
                     )
                 ) : null}
             </div>
             <div>
                 <p>Correct answers:</p>
-                {answerList.map((i) => (
-                    <div style={{ color: "green" }}>{i}</div>
-                ))}
+                <ul>
+                    {answerList.map((i) => (
+                        <li key={i} style={{ color: "green" }}>
+                            {i}
+                        </li>
+                    ))}
+                </ul>
             </div>
         </div>
     );
