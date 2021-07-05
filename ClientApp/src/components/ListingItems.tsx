@@ -30,9 +30,14 @@ export const ListItems = () => {
 
     let current = myArray[index];
 
-    function handleChange(event: {
-        target: { value: React.SetStateAction<string> };
-    }) {
+    // function handleChange(event: {
+    //     //might be wroing
+    //     target: { value: React.SetStateAction<string> };
+    // }) {
+    //     setAnswer(event.target.value);
+    // }
+
+    function handleChange2(event: React.ChangeEvent<HTMLInputElement>) {
         setAnswer(event.target.value);
     }
 
@@ -75,16 +80,14 @@ export const ListItems = () => {
                     <input
                         onKeyDown={function (event) {
                             if (event.key === "Enter") {
-                                if (checkAnswer(current, answer)) {
-                                    setIsCorrect(true);
-                                } else {
-                                    setIsCorrect(false);
-                                }
+                                checkAnswer(current, answer)
+                                    ? setIsCorrect(true)
+                                    : setIsCorrect(false);
                             }
                         }}
                         type="text"
                         value={answer}
-                        onChange={handleChange}
+                        onChange={handleChange2}
                         autoComplete="off"
                     />
                     <button
